@@ -86,6 +86,27 @@ impl DeckOfCardsClient {
         Ok(reshuffle_deck)
     }
 
+    /// Creates a brand new deck.
+    /// 
+    /// # Parameters
+    /// - `jokers`: An optional parameter to add two jokers to the deck.
+    pub async fn brand_new_deck(&self, jokers: Option<bool>) -> Result<Deck, Error> {
+        let url = match jokers {
+            Some(joker) => {
+                if joker {
+                    format!("{}/new/?jokers_enabled=true", self.base_url)
+                } else {
+                    format!("{}/new/?jokers_enabled=false", self.base_url)
+                }
+            }
+            None => format!("{}/new/", self.base_url),
+        };
+
+        let response = reqwest::get(&url).await?;
+        let reshuffle_deck: Deck = response.json().await?;
+        Ok(reshuffle_deck)
+    }
+
 
 
 }
