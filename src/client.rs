@@ -1,5 +1,5 @@
 use reqwest::Error;
-use crate::models::{Deck, DrawCardsResponse};
+use crate::models::{Deck, DrawCardsResponse, DeckCard};
 
 pub struct DeckOfCardsClient {
     base_url: String,
@@ -107,6 +107,24 @@ impl DeckOfCardsClient {
         Ok(reshuffle_deck)
     }
 
+    /// Creates a partial deck with a Vec of provided cards.
+    /// 
+    /// # Parameters
+    /// - `cards`: A Vec of DeckCard.
+    pub async fn create_partial_deck(&self, cards: Vec<DeckCard>) -> Result<Deck, Error> {
+        let card_codes: Vec<String> = cards.iter().map(|card| card.to_code()).collect();
+        let cards_param = card_codes.join(",");
+        
+        let url = format!(
+            "{}/new/shuffle/?cards={}",
+            self.base_url,
+            cards_param
+        );
+
+        let response = reqwest::get(&url).await?;
+        let reshuffle_deck: Deck = response.json().await?;
+        Ok(reshuffle_deck)
+    }
 
 
 }
