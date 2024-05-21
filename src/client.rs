@@ -64,6 +64,11 @@ impl DeckOfCardsClient {
         Ok(draw_card_response)
     }
 
+    /// Reshuffles a deck of cards.
+    /// 
+    /// # Parameters
+    /// - `deck_id`: The id of the deck.
+    /// - `remaining`: An optional parameter to only reshuffle the remaining cards, leaving drawn cards alone.
     pub async fn reshuffle_deck(&self, deck_id: &String, remaining: Option<bool>) -> Result<Deck, Error> {
         let url = match remaining {
             Some(rem) => {
