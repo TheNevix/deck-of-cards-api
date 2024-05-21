@@ -52,7 +52,7 @@ impl DeckOfCardsClient {
     /// # Parameters
     /// - `amount`: Amount of cards to draw.
     /// - `deck_id`: The id of the deck.
-    pub async fn draw_cards(&self, amount: i16, deck_id: String) -> Result<DrawCardsResponse, Error> {
+    pub async fn draw_cards(&self, amount: i16, deck_id: &String) -> Result<DrawCardsResponse, Error> {
         let url = format!(
             "{}/{}/draw/?count={}",
             self.base_url,
