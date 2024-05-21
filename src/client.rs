@@ -64,6 +64,22 @@ impl DeckOfCardsClient {
         Ok(draw_card_response)
     }
 
+    pub async fn reshuffle_deck(&self, deck_id: &String, remaining: Option<bool>) -> Result<Deck, Error> {
+        let url = match remaining {
+            Some(rem) => {
+                if rem {
+                    format!("{}/{}/shuffle/?remaining=true", self.base_url, deck_id)
+                } else {
+                    format!("{}/{}/shuffle/?remaining=false", self.base_url, deck_id)
+                }
+            }
+            None => format!("{}/{}/shuffle/", self.base_url, deck_id),
+        };
+
+        let response = reqwest::get(&url).await?;
+        let reshuffle_deck: Deck = response.json().await?;
+        Ok(reshuffle_deck)
+    }
 
 
 
