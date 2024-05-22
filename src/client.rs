@@ -1,5 +1,5 @@
 use reqwest::Error;
-use crate::models::{Deck, DrawCardsResponse, DeckCard};
+use crate::models::{responses::PileResponse, Deck, DeckCard, DrawCardsResponse};
 
 pub struct DeckOfCardsClient {
     base_url: String,
@@ -124,6 +124,29 @@ impl DeckOfCardsClient {
         let response = reqwest::get(&url).await?;
         let reshuffle_deck: Deck = response.json().await?;
         Ok(reshuffle_deck)
+    }
+
+    /// Adds cards to a pile.
+    /// 
+    /// # Parameters
+    /// - `deck_id`: The id of the deck
+    /// - `pile_name`: The name of the pile.
+    /// - `cards`: A Vec of DeckCard.
+    pub async fn add_to_pile(&self, deck_id: &String, pile_name: String, cards: Vec<DeckCard>) -> Result<PileResponse, Error> {
+        let card_codes: Vec<String> = cards.iter().map(|card| card.to_code()).collect();
+        let cards_param = card_codes.join(",");
+        
+        let url = format!(
+            "{}/{}/pile/{}/add/?cards={}",
+            self.base_url,
+            deck_id,
+            pile_name,
+            cards_param
+        );
+
+        let response = reqwest::get(&url).await?;
+        let add_to_pile_response: PileResponse = response.json().await?;
+        Ok(add_to_pile_response)
     }
 
 
