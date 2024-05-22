@@ -149,5 +149,23 @@ impl DeckOfCardsClient {
         Ok(add_to_pile_response)
     }
 
+    /// Shuffle a pile.
+    /// 
+    /// # Parameters
+    /// - `deck_id`: The id of the deck
+    /// - `pile_name`: The name of the pile.
+    pub async fn shuffle_pile(&self, deck_id: &String, pile_name: String) -> Result<PileResponse, Error> {
+        let url = format!(
+            "{}/{}/pile/{}/shuffle/",
+            self.base_url,
+            deck_id,
+            pile_name
+        );
+
+        let response = reqwest::get(&url).await?;
+        let add_to_pile_response: PileResponse = response.json().await?;
+        Ok(add_to_pile_response)
+    }
+
 
 }
